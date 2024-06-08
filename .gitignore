@@ -1,0 +1,10 @@
+node_modules
+./node_modules
+./src/Config
+./src/Config/Config.js
+/src/Config/Config.js
+src/Config/Config.js
+./src/Config/*
+./__MACOSX/*
+__MACOSX/*
+__MACOSX

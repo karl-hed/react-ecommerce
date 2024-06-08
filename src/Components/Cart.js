@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Navbar } from './Navbar';
 import { useNavigate } from 'react-router-dom';
 import { auth, fs } from '../Config/Config';
-import { collection, getDocs, onSnapshot } from 'firebase/firestore';
+import { collection, getDocs, onSnapshot, doc, updateDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { CartProducts } from './CartProducts';
 
@@ -65,7 +65,7 @@ export const Cart = () => {
     onAuthStateChanged(auth, (user) => {
         if (user) {
             const produitsCollectionRef = collection(fs, "Cart " + user.uid);
-            console.log(produitsCollectionRef);
+            //console.log(produitsCollectionRef);
             onSnapshot(produitsCollectionRef, snapshot => {
                 const newCartProduct = snapshot.docs.map((doc) => ({
                     ID: doc.id,
@@ -81,6 +81,76 @@ export const Cart = () => {
 
   //console.log(cartProducts);
 
+  // global variable
+  let Product;
+
+
+  // cart product increase function
+  const cartProductIncrease = (cartProduct) => {
+
+    const updateProduct = async (user) => {
+      /*
+      Product = cartProduct;
+      Product['qty'] = Product['qty'] + 1;
+      Product['TotalProductPrice'] = Product.qty * Product.price;
+      const docRef = updateDoc(doc(fs, 'Cart ' + user.uid, Product.ID), { Product }).then(() => {
+        console.log("Successfully updated cart");
+      });
+      */
+      
+      //ProductObject = cartProduct;
+      let ProductObject = {
+        price: 0,
+        qty: 0,
+        totalProductPrice: 0,
+        description: "",
+        downloadURL: "",
+        id: "",
+        title: ""
+      };
+      let price = 0;
+      let qty = 0;
+      let totalProductPrice = 0;
+      Object.values(cartProduct).forEach(element => {
+        ProductObject.price = element.price;
+        ProductObject.qty = element.qty + 1;
+        ProductObject.totalProductPrice = Number(element.price) * Number(element.qty);
+        ProductObject.title = element.title;
+        ProductObject.description = element.description;
+        ProductObject.id = element.id;
+        ProductObject.downloadURL = element.downloadURL;
+        // console.log(element);
+      });
+      console.log(`ProductObject['qty']: ${ProductObject['qty']}, ProductObject['price']: ${ProductObject['price']}, ProductObject['totalProductPrice']: ${ProductObject['totalProductPrice']}`);
+      console.log(`ProductObject['title']: ${ProductObject['title']}, ProductObject['description']: ${ProductObject['description']}, ProductObject['id']: ${ProductObject['id']}, ProductObject['downloadURL']: ${ProductObject['downloadURL']}`);
+      console.log(`cartProduct.ID = ${cartProduct.ID}`);
+      /*
+      console.log(`cartProduct = ${cartProduct}`);
+      console.log(`cartProduc.price = ${cartProduct.price}`);
+      console.log(`Product.ID = ${Product.ID}, Product.qty = ${Product.qty}, Product.TotalProductPrice = ${Product.TotalProductPrice}`);
+      */
+      //Product.qty = Product.qty + 1;
+      //Product.TotalProductPrice = Number(Product.qty) * Number(Product.price);
+      // console.log(`Product.ID = ${Product.ID}, Product.qty = ${Product.qty}, Product.TotalProductPrice = ${Product.TotalProductPrice}`);
+      const produitsDoc = doc(fs, "Cart " + user.uid, cartProduct.ID);
+      //console.log(`produitsDoc = ${produitsDoc}`);
+      // const newFields = {age: age + 1};
+      Product = ProductObject
+      await updateDoc(produitsDoc, { Product });
+    };
+
+    // console.log(cartProduct);
+
+    // updating in database
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        updateProduct(user);
+      } else {
+        console.log();
+      }
+    });
+  }
+
     return (
         <>
             <Navbar user={name} />
@@ -89,7 +159,7 @@ export const Cart = () => {
                 <div className='container-fluid'>
                     <h1 className='text-center'>Cart</h1>
                     <div className='products-box'>
-                        <CartProducts cartProducts={cartProducts} />
+                        <CartProducts cartProducts={cartProducts} cartProductIncrease={cartProductIncrease} />
                     </div>
                 </div>
             )}

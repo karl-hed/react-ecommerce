@@ -102,26 +102,23 @@ export const Cart = () => {
       let ProductObject = {
         price: 0,
         qty: 0,
-        totalProductPrice: 0,
+        TotalProductPrice: 0,
         description: "",
         downloadURL: "",
         id: "",
         title: ""
       };
-      let price = 0;
-      let qty = 0;
-      let totalProductPrice = 0;
       Object.values(cartProduct).forEach(element => {
         ProductObject.price = element.price;
         ProductObject.qty = element.qty + 1;
-        ProductObject.totalProductPrice = Number(element.price) * Number(element.qty);
+        ProductObject.TotalProductPrice = element.price * ProductObject.qty;
         ProductObject.title = element.title;
         ProductObject.description = element.description;
         ProductObject.id = element.id;
         ProductObject.downloadURL = element.downloadURL;
         // console.log(element);
       });
-      console.log(`ProductObject['qty']: ${ProductObject['qty']}, ProductObject['price']: ${ProductObject['price']}, ProductObject['totalProductPrice']: ${ProductObject['totalProductPrice']}`);
+      console.log(`ProductObject['qty']: ${ProductObject['qty']}, ProductObject['price']: ${ProductObject['price']}, ProductObject['TotalProductPrice']: ${ProductObject['TotalProductPrice']}`);
       console.log(`ProductObject['title']: ${ProductObject['title']}, ProductObject['description']: ${ProductObject['description']}, ProductObject['id']: ${ProductObject['id']}, ProductObject['downloadURL']: ${ProductObject['downloadURL']}`);
       console.log(`cartProduct.ID = ${cartProduct.ID}`);
       /*

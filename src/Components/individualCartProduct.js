@@ -10,12 +10,14 @@ export const IndividualCartProduct = ({ cartProduct }) => {
     let description = "";
     let price = "";
     let totalProductPrice = "";
+    let qty = "";
     Object.values(cartProduct).forEach(element => {
         url = element.downloadURL;
         title = element.title;
         description = element.description;
         price = element.price;
         totalProductPrice = element.TotalProductPrice;
+        qty = element.qty;
         if (element.downloadURL) {
             //console.log(element.downloadURL);
         }
@@ -23,7 +25,7 @@ export const IndividualCartProduct = ({ cartProduct }) => {
     console.log(url);
     //console.log(cartProduct);
     return (
-        <>
+        
         <div className='product'>
             <div className='product-img'>
                 <img src={url} alt='cart product' />
@@ -36,7 +38,7 @@ export const IndividualCartProduct = ({ cartProduct }) => {
                 <div className='action-btn minus' >
                     <Icon icon={minus} size={20} />
                 </div>
-                <div>{cartProduct.qty}</div>
+                <div>{qty}</div>
                 <div className='action-btn plus' >
                     <Icon icon={plus} size={20} />
                 </div>
@@ -44,6 +46,6 @@ export const IndividualCartProduct = ({ cartProduct }) => {
             <div className='product-text cart-price'>$ {totalProductPrice}</div>
             <div className='btn btn-danger btn-md cart-btn' >ENLEVER</div>
         </div>
-        </>
+        
     )
 }

@@ -9,7 +9,7 @@ export const IndividualProduct = ({ individualProduct, addToCart }) => {
     //Object.values(individualProduct).forEach((element) => {
     //    console.log(element);
     //});
-    console.log('allo');
+    //console.log('allo');
 
     const handleAddToCart = () => {
       addToCart(individualProduct);

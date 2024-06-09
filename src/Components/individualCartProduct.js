@@ -4,7 +4,7 @@ import { Icon } from 'react-icons-kit';
 import { plus } from 'react-icons-kit/feather/plus';
 import { minus } from 'react-icons-kit/feather/minus';
 
-export const IndividualCartProduct = ({ cartProduct, cartProductIncrease }) => {
+export const IndividualCartProduct = ({ cartProduct, cartProductIncrease, cartProductDecrease }) => {
     let url = "";
     let title = "";
     let description = "";
@@ -30,6 +30,10 @@ export const IndividualCartProduct = ({ cartProduct, cartProductIncrease }) => {
         cartProductIncrease(cartProduct);
     }
 
+    const handleCartProductDecrease = () => {
+        cartProductDecrease(cartProduct);
+    }
+
     return (
         
         <div className='product'>
@@ -42,7 +46,7 @@ export const IndividualCartProduct = ({ cartProduct, cartProductIncrease }) => {
             <span>Quantité</span>
             <div className='product-text quantity-box'>
                 <div className='action-btn minus' >
-                    <Icon icon={minus} size={20} />
+                    <Icon icon={minus} size={20} onClick={handleCartProductDecrease} />
                 </div>
                 <div>{qty}</div>
                 <div className='action-btn plus' >

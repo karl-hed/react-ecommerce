@@ -84,68 +84,57 @@ export const Cart = () => {
   // global variable
   let Product;
 
+  // update Produit
+  const updateProduct = async (user, cartProduct, quantite) => {
+    let ProductObject = {
+      price: 0,
+      qty: 0,
+      TotalProductPrice: 0,
+      description: "",
+      downloadURL: "",
+      id: "",
+      title: ""
+    };
+
+    // ici il n'y a qu'un seul cartProduct
+    Object.values(cartProduct).forEach(element => {
+      ProductObject.price = element.price;
+      ProductObject.qty = element.qty + quantite;
+      ProductObject.TotalProductPrice = element.price * ProductObject.qty;
+      ProductObject.title = element.title;
+      ProductObject.description = element.description;
+      ProductObject.id = element.id;
+      ProductObject.downloadURL = element.downloadURL;
+    });
+    console.log(`ProductObject['qty']: ${ProductObject['qty']}, ProductObject['price']: ${ProductObject['price']}, ProductObject['TotalProductPrice']: ${ProductObject['TotalProductPrice']}`);
+    console.log(`ProductObject['title']: ${ProductObject['title']}, ProductObject['description']: ${ProductObject['description']}, ProductObject['id']: ${ProductObject['id']}, ProductObject['downloadURL']: ${ProductObject['downloadURL']}`);
+    console.log(`cartProduct.ID = ${cartProduct.ID}`);
+
+    const produitsDoc = doc(fs, "Cart " + user.uid, cartProduct.ID);
+    Product = ProductObject
+    await updateDoc(produitsDoc, { Product });
+  };
 
   // cart product increase function
   const cartProductIncrease = (cartProduct) => {
-
-    const updateProduct = async (user) => {
-      /*
-      Product = cartProduct;
-      Product['qty'] = Product['qty'] + 1;
-      Product['TotalProductPrice'] = Product.qty * Product.price;
-      const docRef = updateDoc(doc(fs, 'Cart ' + user.uid, Product.ID), { Product }).then(() => {
-        console.log("Successfully updated cart");
-      });
-      */
-      
-      //ProductObject = cartProduct;
-      let ProductObject = {
-        price: 0,
-        qty: 0,
-        TotalProductPrice: 0,
-        description: "",
-        downloadURL: "",
-        id: "",
-        title: ""
-      };
-      Object.values(cartProduct).forEach(element => {
-        ProductObject.price = element.price;
-        ProductObject.qty = element.qty + 1;
-        ProductObject.TotalProductPrice = element.price * ProductObject.qty;
-        ProductObject.title = element.title;
-        ProductObject.description = element.description;
-        ProductObject.id = element.id;
-        ProductObject.downloadURL = element.downloadURL;
-        // console.log(element);
-      });
-      console.log(`ProductObject['qty']: ${ProductObject['qty']}, ProductObject['price']: ${ProductObject['price']}, ProductObject['TotalProductPrice']: ${ProductObject['TotalProductPrice']}`);
-      console.log(`ProductObject['title']: ${ProductObject['title']}, ProductObject['description']: ${ProductObject['description']}, ProductObject['id']: ${ProductObject['id']}, ProductObject['downloadURL']: ${ProductObject['downloadURL']}`);
-      console.log(`cartProduct.ID = ${cartProduct.ID}`);
-      /*
-      console.log(`cartProduct = ${cartProduct}`);
-      console.log(`cartProduc.price = ${cartProduct.price}`);
-      console.log(`Product.ID = ${Product.ID}, Product.qty = ${Product.qty}, Product.TotalProductPrice = ${Product.TotalProductPrice}`);
-      */
-      //Product.qty = Product.qty + 1;
-      //Product.TotalProductPrice = Number(Product.qty) * Number(Product.price);
-      // console.log(`Product.ID = ${Product.ID}, Product.qty = ${Product.qty}, Product.TotalProductPrice = ${Product.TotalProductPrice}`);
-      const produitsDoc = doc(fs, "Cart " + user.uid, cartProduct.ID);
-      //console.log(`produitsDoc = ${produitsDoc}`);
-      // const newFields = {age: age + 1};
-      Product = ProductObject
-      await updateDoc(produitsDoc, { Product });
-    };
 
     // console.log(cartProduct);
 
     // updating in database
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        updateProduct(user);
+        updateProduct(user, cartProduct, 1);
       } else {
         console.log();
       }
     });
+  }
+
+  // cart product decrease functionnality
+  const cartProductDecrease = (cartProduct) => {
+    if (Product.qty > 1) {
+
+    }
   }
 
     return (

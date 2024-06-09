@@ -5,6 +5,7 @@ import { auth, fs } from '../Config/Config';
 import { collection, getDocs, onSnapshot, doc, updateDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { CartProducts } from './CartProducts';
+import StripeCheckout from 'react-stripe-checkout';
 
 let userCopyEmail = "";
 let name = "";
@@ -160,6 +161,20 @@ export const Cart = () => {
                         <CartProducts cartProducts={cartProducts} 
                         cartProductIncrease={cartProductIncrease} 
                         cartProductDecrease={cartProductDecrease} />
+                    </div>
+                    <div className='summary-box'>
+                      <h5>Contenu du panier</h5>
+                      <br></br>
+                      <div>
+                        Nombre de produits: <span>10</span>
+                      </div>
+                      <div>
+                        Total à payer: <span>$ 400</span>
+                      </div>
+                      <br></br>
+                      <StripeCheckout>
+
+                      </StripeCheckout>
                     </div>
                 </div>
             )}

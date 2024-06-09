@@ -59,6 +59,10 @@ export const Cart = () => {
     name = element.FullName;
   });
 
+
+  // state de totalProduits
+  const [totalProduits, setTotalProduits] = useState(0);
+
   const [cartProducts, setCartProducts] = useState([]);
 
   // chercher les produits du firestore
@@ -73,6 +77,9 @@ export const Cart = () => {
                     ...doc.data(),
                 }));
                 setCartProducts(newCartProduct);
+
+                const qte = snapshot.docs.length;
+                setTotalProduits(qte);
             });
         } else {
             console.log('utilisateur non inscrit');
@@ -94,7 +101,24 @@ export const Cart = () => {
   });
 
   //console.log(qty);
-  console.log(quantite);
+  // console.log(quantite);
+
+  // reducing quantite dans une seule valeur
+  const reducerDeQuantite = (accumulateur, valeurCourante) => accumulateur + valeurCourante;
+
+  const totalQuantite = qty.reduce(reducerDeQuantite, 0);
+
+  // console.log(totalQuantite);
+
+  // avoir le TotalProductPrice du cartProducts dans un tableau different
+  const prix = cartProducts.map((cartProduct) => {
+    return cartProduct.Product.TotalProductPrice;
+  });
+
+  // reducer pour le prix dans une variable
+  const reducerPrix = (accumulateur, valeurCourante) => accumulateur + valeurCourante;
+
+  const prixTotal = prix.reduce(reducerPrix, 0);
 
   // global variable
   let Product;
@@ -166,7 +190,7 @@ export const Cart = () => {
 
     return (
         <>
-            <Navbar user={name} />
+            <Navbar user={name} totalProduits={totalProduits} />
             <br></br>
             {cartProducts.length > 0 && (
                 <div className='container-fluid'>
@@ -180,10 +204,10 @@ export const Cart = () => {
                       <h5>Contenu du panier</h5>
                       <br></br>
                       <div>
-                        Nombre de produits: <span>10</span>
+                        Nombre de produits: <span>{totalQuantite}</span>
                       </div>
                       <div>
-                        Total à payer: <span>$ 400</span>
+                        Total à payer: <span>$ {prixTotal}</span>
                       </div>
                       <br></br>
                       <StripeCheckout>

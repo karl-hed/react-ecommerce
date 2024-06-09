@@ -123,6 +123,21 @@ useEffect(() => {
   //console.log(products);
 }, []);
 
+// state de totalProduits
+const [totalProduits, setTotalProduits] = useState(0);
+// avoir les produits du cart
+useEffect(() => {
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      const produitsCollectionRef = collection(fs, "Cart " + user.uid);
+      onSnapshot(produitsCollectionRef, snapshot => {
+        const qte = snapshot.docs.length;
+        setTotalProduits(qte);
+    });
+    }
+  });
+}, []);
+
 let Product;
 const addToCart = (product) => {
   if (uid !== null) {
@@ -141,7 +156,7 @@ const addToCart = (product) => {
 
   return (
     <>
-        <Navbar user={name} />
+        <Navbar user={name} totalProduits={totalProduits} />
         <br></br>
         {products.length > 0 && (
           <div className='container-fluid'>

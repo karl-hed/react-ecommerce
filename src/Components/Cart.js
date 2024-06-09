@@ -80,7 +80,21 @@ export const Cart = () => {
     });
   }, []);
 
-  //console.log(cartProducts);
+  // console.log(cartProducts);
+  
+  // avoir les quantites de cartProducts dans un tableau separe
+  // les 2 versions fonctionnent qty et quantite
+  const qty = Object.values(cartProducts).map(cartProduct => { 
+    //console.log(cartProduct.Product.qty);
+    return cartProduct.Product.qty;
+  });
+
+  const quantite = cartProducts.map(cartProduct => {
+    return cartProduct.Product.qty;
+  });
+
+  //console.log(qty);
+  console.log(quantite);
 
   // global variable
   let Product;
@@ -108,9 +122,9 @@ export const Cart = () => {
       ProductObject.id = element.id;
       ProductObject.downloadURL = element.downloadURL;
     });
-    console.log(`ProductObject['qty']: ${ProductObject['qty']}, ProductObject['price']: ${ProductObject['price']}, ProductObject['TotalProductPrice']: ${ProductObject['TotalProductPrice']}`);
-    console.log(`ProductObject['title']: ${ProductObject['title']}, ProductObject['description']: ${ProductObject['description']}, ProductObject['id']: ${ProductObject['id']}, ProductObject['downloadURL']: ${ProductObject['downloadURL']}`);
-    console.log(`cartProduct.ID = ${cartProduct.ID}`);
+    //console.log(`ProductObject['qty']: ${ProductObject['qty']}, ProductObject['price']: ${ProductObject['price']}, ProductObject['TotalProductPrice']: ${ProductObject['TotalProductPrice']}`);
+    //console.log(`ProductObject['title']: ${ProductObject['title']}, ProductObject['description']: ${ProductObject['description']}, ProductObject['id']: ${ProductObject['id']}, ProductObject['downloadURL']: ${ProductObject['downloadURL']}`);
+    //console.log(`cartProduct.ID = ${cartProduct.ID}`);
 
     const produitsDoc = doc(fs, "Cart " + user.uid, cartProduct.ID);
     Product = ProductObject
@@ -120,7 +134,7 @@ export const Cart = () => {
   // cart product increase function
   const cartProductIncrease = (cartProduct) => {
 
-    // console.log(cartProduct);
+    //console.log(cartProduct);
 
     // updating in database
     onAuthStateChanged(auth, (user) => {

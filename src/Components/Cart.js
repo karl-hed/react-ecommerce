@@ -6,6 +6,22 @@ import { collection, getDocs, onSnapshot, doc, updateDoc } from 'firebase/firest
 import { onAuthStateChanged } from 'firebase/auth';
 import { CartProducts } from './CartProducts';
 import StripeCheckout from 'react-stripe-checkout';
+import axios from 'axios';
+
+import { toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+//toast.configure();
+
+<ToastContainer
+    autoClose={5000}
+    hideProgressBar={false}
+    closeOnClick={true}
+    pauseOnHover={false}
+    draggable={false}
+    progress={undefined}
+/>
 
 let userCopyEmail = "";
 let name = "";
@@ -15,7 +31,6 @@ export const Cart = () => {
     const usersCollectionRef = collection(fs, "users");
 
     
-
   // getting current user function
   function GetCurrentUser() {
     const [user, setUser] = useState(null);
@@ -95,7 +110,6 @@ export const Cart = () => {
     //console.log(cartProduct.Product.qty);
     return cartProduct.Product.qty;
   });
-
   const quantite = cartProducts.map(cartProduct => {
     return cartProduct.Product.qty;
   });
@@ -106,7 +120,7 @@ export const Cart = () => {
   // reducing quantite dans une seule valeur
   const reducerDeQuantite = (accumulateur, valeurCourante) => accumulateur + valeurCourante;
 
-  const totalQuantite = qty.reduce(reducerDeQuantite, 0);
+  const totalQuantite = quantite.reduce(reducerDeQuantite, 0);
 
   // console.log(totalQuantite);
 
@@ -188,6 +202,34 @@ export const Cart = () => {
     }
   }
 
+  // charging paiement
+  const navigate = useNavigate();
+  const handleToken = async (token) => {
+    // console.log(token);
+    const cart = {name: 'All Products', prixTotal};
+    const response = await axios.post('http://localhost:8080/checkout', {
+      token,
+      cart
+    });
+    console.log(response);
+    let {status} = response.data;
+    console.log(status);
+    if (status === 'success') {
+      navigate('/');
+      toast.success('Your order has been placed successfully', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+      });
+    } else {
+      alert('Something went wrong in checkout');
+    }
+  };
+
     return (
         <>
             <Navbar user={name} totalProduits={totalProduits} />
@@ -210,9 +252,14 @@ export const Cart = () => {
                         Total à payer: <span>$ {prixTotal}</span>
                       </div>
                       <br></br>
-                      <StripeCheckout>
-
-                      </StripeCheckout>
+                      <StripeCheckout
+                        stripeKey={process.env.REACT_APP_STRIPE_PUBLIC_KEY}
+                        token={handleToken}
+                        billingAddress
+                        shippingAddress
+                        name='All Products'
+                        amount={prixTotal * 100}
+                      ></StripeCheckout>
                     </div>
                 </div>
             )}

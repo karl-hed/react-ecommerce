@@ -86,6 +86,7 @@ export const Cart = () => {
 
   // update Produit
   const updateProduct = async (user, cartProduct, quantite) => {
+
     let ProductObject = {
       price: 0,
       qty: 0,
@@ -125,15 +126,26 @@ export const Cart = () => {
       if (user) {
         updateProduct(user, cartProduct, 1);
       } else {
-        console.log();
+        console.log("utilisateur non connecté");
       }
     });
   }
 
   // cart product decrease functionnality
   const cartProductDecrease = (cartProduct) => {
-    if (Product.qty > 1) {
-
+    let quantite = 0;
+    Object.values(cartProduct).forEach(element => {
+      quantite = element.qty;
+    });
+    if (quantite > 1) {
+      // updating in database
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          updateProduct(user, cartProduct, (-1));
+        } else {
+          console.log("utilisateur non connecté");
+        }
+      });
     }
   }
 
@@ -145,7 +157,9 @@ export const Cart = () => {
                 <div className='container-fluid'>
                     <h1 className='text-center'>Cart</h1>
                     <div className='products-box'>
-                        <CartProducts cartProducts={cartProducts} cartProductIncrease={cartProductIncrease} />
+                        <CartProducts cartProducts={cartProducts} 
+                        cartProductIncrease={cartProductIncrease} 
+                        cartProductDecrease={cartProductDecrease} />
                     </div>
                 </div>
             )}

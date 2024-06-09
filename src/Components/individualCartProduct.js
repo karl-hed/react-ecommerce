@@ -3,6 +3,9 @@ import { CartProducts } from './CartProducts';
 import { Icon } from 'react-icons-kit';
 import { plus } from 'react-icons-kit/feather/plus';
 import { minus } from 'react-icons-kit/feather/minus';
+import { auth, fs } from '../Config/Config';
+import { doc, deleteDoc } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
 
 export const IndividualCartProduct = ({ cartProduct, cartProductIncrease, cartProductDecrease }) => {
     let url = "";
@@ -34,6 +37,21 @@ export const IndividualCartProduct = ({ cartProduct, cartProductIncrease, cartPr
         cartProductDecrease(cartProduct);
     }
 
+    const deleteProduct = async (user) => {
+        const produitsDoc = doc(fs, "Cart " + user.uid, cartProduct.ID);
+        await deleteDoc(produitsDoc);
+    }
+
+    const handleCartProductDelete = () => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                deleteProduct(user);
+            } else {
+              console.log("utilisateur non connecté");
+            }
+          });
+    }
+
     return (
         
         <div className='product'>
@@ -54,7 +72,7 @@ export const IndividualCartProduct = ({ cartProduct, cartProductIncrease, cartPr
                 </div>
             </div>
             <div className='product-text cart-price'>$ {totalProductPrice}</div>
-            <div className='btn btn-danger btn-md cart-btn' >ENLEVER</div>
+            <div className='btn btn-danger btn-md cart-btn' onClick={handleCartProductDelete}>ENLEVER</div>
         </div>
         
     )

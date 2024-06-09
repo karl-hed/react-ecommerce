@@ -8,3 +8,5 @@ src/Config/Config.js
 ./__MACOSX/*
 __MACOSX/*
 __MACOSX
+./.env
+.env

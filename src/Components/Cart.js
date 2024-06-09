@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Navbar } from './Navbar';
 import { useNavigate } from 'react-router-dom';
 import { auth, fs } from '../Config/Config';
-import { collection, getDocs, onSnapshot, doc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, onSnapshot, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { CartProducts } from './CartProducts';
 import StripeCheckout from 'react-stripe-checkout';
@@ -225,6 +225,34 @@ export const Cart = () => {
         draggable: false,
         progress: undefined,
       });
+
+      const deleteProduct = async (uid, snapID) => {
+        const produitsDoc = doc(fs, "Cart " + uid, snapID);
+        await deleteDoc(produitsDoc);
+      }
+
+      const uid = auth.currentUser.uid;
+      const carts = collection(fs, "Cart " + uid);
+      
+      onSnapshot(carts, snapshot => {
+        //const qte = snapshot.docs.length;
+        for (var snap of snapshot.docs) {
+          deleteProduct(uid, snap.id);
+        }
+      });
+
+
+      /*
+      Object.values(carts).forEach(element => {
+        console.log(element.price);
+      });
+      */
+      /*
+      for (var snap of carts.docs) {
+        deleteProduct(uid, snap.id);
+      }
+      */
+
     } else {
       alert('Something went wrong in checkout');
     }
